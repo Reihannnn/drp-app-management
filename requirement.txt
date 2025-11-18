@@ -1,0 +1,11 @@
+# Electron runtime untuk menjalankan aplikasi desktop
+electron==39.1.2
+
+# TailwindCSS CLI untuk proses build CSS
+@tailwindcss/cli==4.1.17
+
+# TailwindCSS core framework untuk styling UI
+tailwindcss==4.1.17
+
+# SQLite3 driver untuk Node.js (digunakan CRUD database lokal)
+sqlite3==5.1.7
