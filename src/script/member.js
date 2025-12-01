@@ -1,10 +1,16 @@
 // member.js - Script untuk Member Management
 
 // Load data member saat halaman dibuka
-window.addEventListener("DOMContentLoaded", () => {
-  loadMembers();
-  initFormHandler();
-  initSearchHandler();
+
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await window.api.autoUpdateAllMember();
+    loadMembers();
+    initSearchHandler();
+    console.log("Auto update member status selesai");
+  } catch (err) {
+    console.error("Auto update error:", err);
+  }
 });
 
 // Function untuk load semua member
@@ -12,6 +18,7 @@ async function loadMembers() {
   try {
     console.log("Loading members...");
     const members = await window.api.getMember();
+    members.sort((a, b) => a.id - b.id);
     console.log("Members data:", members);
     displayMembers(members);
   } catch (error) {
@@ -38,15 +45,17 @@ function displayMembers(members) {
 
   tableBody.innerHTML = members
     .map(
-      (member) => `
+      (member, index) => `
     <tr class="hover:bg-gray-50 transition">
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        ${member.id}
+        ${index + 1}
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="flex items-center">
           <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-            <span class="text-blue-600 font-semibold">${member.nama.charAt(0).toUpperCase()}</span>
+            <span class="text-blue-600 font-semibold">${member.nama
+              .charAt(0)
+              .toUpperCase()}</span>
           </div>
           <div class="ml-4">
             <div class="text-sm font-medium text-gray-900">${member.nama}</div>
@@ -56,18 +65,15 @@ function displayMembers(members) {
       <td class="px-6 py-4 text-sm text-gray-700">
         ${member.alamat || "-"}
       </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+      ${member.no_telp || "-"}
+      </td>
       <td class="px-6 py-4 whitespace-nowrap">
-        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getCategoryClass(
-          member.category
+        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(
+          member.status
         )}">
-          ${member.category}
+          ${member.status}
         </span>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        ${formatDate(member.date)}
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        ${member.no_telp || "-"}
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
         <button 
@@ -100,45 +106,15 @@ function formatDate(dateString) {
 }
 
 // Function untuk styling kategori
-function getCategoryClass(category) {
-  switch (category) {
+function getStatusClass(status) {
+  switch (status) {
     case "Active":
       return "bg-green-100 text-green-800";
     case "Non Active":
       return "bg-red-100 text-red-800";
-    case "Harian":
-      return "bg-yellow-100 text-yellow-800";
     default:
       return "bg-gray-100 text-gray-800";
   }
-}
-
-// Handle form submit untuk tambah member
-function initFormHandler() {
-  const form = document.getElementById("formAddMember");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const memberData = {
-      nama: document.getElementById("nama").value,
-      alamat: document.getElementById("alamat").value,
-      date: document.getElementById("date").value,
-      category: document.getElementById("category").value,
-      no_telp: document.getElementById("no_telp").value,
-    };
-
-    try {
-      await window.api.addMember(memberData);
-      alert("Member berhasil ditambahkan!");
-      form.reset();
-      loadMembers(); // Reload data
-    } catch (error) {
-      console.error("Error adding member:", error);
-      alert("Gagal menambahkan member!");
-    }
-  });
 }
 
 // Function untuk delete member
@@ -163,20 +139,23 @@ function editMember(id) {
 
 // Search functionality
 function initSearchHandler() {
-  const searchInput = document.querySelector('input[placeholder="Cari member..."]');
+  const searchInput = document.querySelector(
+    'input[placeholder="Cari member..."]'
+  );
   if (!searchInput) return;
 
   searchInput.addEventListener("input", async (e) => {
     const searchTerm = e.target.value.toLowerCase();
     const members = await window.api.getMember();
-    
+
     const filtered = members.filter(
       (member) =>
         member.nama.toLowerCase().includes(searchTerm) ||
-        member.category.toLowerCase().includes(searchTerm) ||
+        member.no_telp.includes(searchTerm) ||
+        member.status.toLowerCase().includes(searchTerm) ||
         (member.alamat && member.alamat.toLowerCase().includes(searchTerm))
     );
-    
+
     displayMembers(filtered);
   });
 }

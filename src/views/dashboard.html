@@ -5,23 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard | DRP Management</title>
     <link rel="stylesheet" href="../css/output.css" />
+    <link
+      rel="stylesheet"
+      href="../../public/assets/fontawesome/css/all.min.css"
+    />
+    <style>
+      :root {
+        --blue-primary: oklch(54.6% 0.245 262.881);
+      }
+      .dashboard {
+        background-color: var(--blue-primary);
+      }
+
+      .icon-dashboard {
+        color: white;
+      }
+
+      .dashboard:hover {
+        background-color: white;
+        color: var(--blue-primary);
+
+        .icon-dashboard {
+          color: var(--blue-primary);
+        }
+      }
+
+      .kotak-div {
+        gap: 1.3rem;
+        margin-top: 1rem;
+      }
+
+      .kotak {
+        width: 220px;
+        height: 120px;
+        padding: 0.5rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+      }
+
+      .member-status {
+        border: 1px black;
+      }
+    </style>
   </head>
-  <body class="flex">
+  <body class="main">
     <!-- sidebar  -->
     <div class="sidebar"></div>
-    <div id="content"></div>
+    <main class="lg:ml-64 ml-0 min-h-screen p-4 transition-all duration-300">
+      <div class="shadow-lg p-6 rounded-xl header">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+          Dashboard Management
+        </h1>
+
+        <p class="text-gray-600">Visualisasi Data Management Gym</p>
+      </div>
+
+      <!-- squre -->
+      <div class="flex kotak-div">
+        <div class="shadow-lg kotak text-xl member-status font-bold">
+          <span class="text-xs mb-2">Member Status</span>
+          <h1><span id="member-active"></span> Aktif</h1>
+          <h1><span id="member-non-active"></span> Non Aktif</h1>
+        </div>
+        <div class="shadow-lg kotak"></div>
+        <div class="shadow-lg kotak"></div>
+      </div>
+    </main>
   </body>
 
   <script>
-    fetch("src/components/sidebar.html")
+    fetch("../components/sidebar.html")
       .then((res) => res.text())
       .then((html) => {
         document.querySelector(".sidebar").innerHTML = html;
 
-        document.getElementById("btn-logout").addEventListener("click", () => {
+        document.getElementById("btn-logout")?.addEventListener("click", () => {
           window.api.exitApp();
         });
       });
   </script>
-  <script src="router.js"></script>
+
+  <script src="../script/dashboard.js"></script>
 </html>

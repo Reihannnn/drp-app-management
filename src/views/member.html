@@ -4,107 +4,73 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Member | DRP Management</title>
+    <link
+      rel="stylesheet"
+      href="../../public/assets/fontawesome/css/all.min.css"
+    />
     <link rel="stylesheet" href="../css/output.css" />
+    <!-- style custom use pure css  -->
+    <style>
+      .print-btn {
+        border-radius: 10%;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .print-btn:hover {
+        background-color: rgb(146, 255, 146);
+        cursor: pointer;
+      }
+
+      :root {
+        --blue-primary: oklch(54.6% 0.245 262.881);
+      }
+      .member {
+        background-color: var(--blue-primary);
+      }
+
+      .icon-member {
+        color: white;
+      }
+
+      .member:hover {
+        background-color: white;
+        color: var(--blue-primary);
+
+        .icon-member {
+          color: var(--blue-primary);
+        }
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 min-h-screen">
+  <body>
     <!-- Sidebar -->
     <div class="sidebar"></div>
-
-    <!-- Main Content - dengan margin kiri untuk sidebar -->
-    <main class="lg:ml-64 min-h-screen p-8 transition-all duration-300">
-      <!-- Header Section -->
-      <div class="mb-8">
+    <!-- Main Content - dengan margirn kiri untuk sidebar -->
+    <main
+      class="lg:ml-64 ml-0 min-h-screen p-4 transition-all duration-300 main"
+    >
+      <div class="mb-6 shadow-lg p-6 rounded-xl">
         <h1 class="text-4xl font-bold text-gray-800 mb-2">Member Management</h1>
         <p class="text-gray-600">Kelola data member gym Anda</p>
       </div>
-
-      <!-- Form Tambah Member -->
-      <div class="bg-white shadow-lg rounded-xl p-6 mb-8 border border-gray-200">
-        <div class="flex items-center mb-6">
-          <div class="bg-blue-100 p-3 rounded-lg mr-3">
-            <i class="fas fa-user-plus text-blue-600 text-xl"></i>
-          </div>
-          <h2 class="text-2xl font-semibold text-gray-800">Tambah Member Baru</h2>
-        </div>
-
-        <form id="formAddMember" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-            <input
-              id="nama"
-              type="text"
-              placeholder="Masukkan nama lengkap"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
-            <input
-              id="alamat"
-              type="text"
-              placeholder="Masukkan alamat"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Bergabung</label>
-            <input
-              id="date"
-              type="date"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status Kategori</label>
-            <select
-              id="category"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            >
-              <option value="Active">Active</option>
-              <option value="Non Active">Non Active</option>
-              <option value="Harian">Harian</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">No Telepon</label>
-            <input
-              id="no_telp"
-              type="text"
-              placeholder="08xx-xxxx-xxxx"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div class="md:col-span-2 flex justify-end mt-4">
-            <button
-              type="submit"
-              class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg flex items-center space-x-2"
-            >
-              <i class="fas fa-plus-circle"></i>
-              <span>Tambah Member</span>
-            </button>
-          </div>
-        </form>
-      </div>
-
       <!-- Table Member -->
-      <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
+      <div
+        class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden"
+      >
         <div class="p-6 border-b border-gray-200">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="bg-green-100 p-3 rounded-lg mr-3">
                 <i class="fas fa-users text-green-600 text-xl"></i>
               </div>
-              <h2 class="text-2xl font-semibold text-gray-800">Daftar Member</h2>
+              <h2 class="text-2xl font-semibold text-gray-800">
+                Daftar Member
+              </h2>
             </div>
-            
+
             <!-- Search Bar -->
+
             <div class="relative">
               <input
                 type="text"
@@ -114,31 +80,47 @@
               <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
             </div>
           </div>
+          <br>
+          <button class="p-4 bg-green-100 print-btn" id="print-button">
+            <i
+              class="fas fa-box text-lg w-5 text-green-600 group-hover:text-white"
+            ></i>
+            Print Excel
+          </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th
+                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
                   ID
                 </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th
+                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
                   Nama
                 </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th
+                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
                   Alamat
                 </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Kategori
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Tanggal
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th
+                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
                   No Telp
                 </th>
-                <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th
+                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
                   Aksi
                 </th>
               </tr>
@@ -169,6 +151,7 @@
         });
       });
   </script>
-  <script src="../../router.js"></script>
+  <!-- <script src="../../router.js"></script> -->
   <script src="../script/member.js"></script>
+  <script src="../script/print.js"></script>
 </html>

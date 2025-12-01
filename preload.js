@@ -5,22 +5,32 @@ contextBridge.exposeInMainWorld("api", {
   exitApp: () => ipcRenderer.send("app:exit"),
 
   // MEMBER
-  addMember : (data) => ipcRenderer.send("member:add", data),
-  getMember : () => ipcRenderer.invoke("member:list"),
+  addMember: (data) => ipcRenderer.invoke("member:add", data),
+  getMember: () => ipcRenderer.invoke("member:list"),
   updateMember: (data) => ipcRenderer.invoke("member:update", data),
   deleteMember: (id) => ipcRenderer.invoke("member:delete", id),
+  // UPDATE STATUS MEMBER
+  autoUpdateAllMember: () => ipcRenderer.invoke("member:autoUpdateAll"),
+
+  // CHECK MEMBER EXIST 
+  checkMemberExist: (nama) => ipcRenderer.invoke("checkMemberExist", nama),
 
   // MEMBERSHIP
   addMembership: (data) => ipcRenderer.invoke("membership:add", data),
+  getAllMembership: () => ipcRenderer.invoke("membership:list"),
+  //GET ALL MEMBERSHIP USE NAME 
+  getAllMembershipWithName: () => ipcRenderer.invoke("getAllMembershipWithName:list"),
   listMembershipByMember: (id) =>
     ipcRenderer.invoke("membership:listByMember", id),
-  updateMembership: (data) =>
-    ipcRenderer.invoke("membership:update", data),
-  deleteMembership: (id) =>
-    ipcRenderer.invoke("membership:delete", id),
+  updateMembership: (data) => ipcRenderer.invoke("membership:update", data),
+  deleteMembership: (id) => ipcRenderer.invoke("membership:delete", id),
 
-  // INCOME 
+  // SEARCH
+  searchMember: (keyword) => ipcRenderer.invoke("search-member", keyword),
+
+  // INCOME
   listIncome: () => ipcRenderer.invoke("income:list"),
+
+  // chnage DIFFERENT PAGE
+  openPage: (page) => ipcRenderer.send("open-page", page),
 });
-
-

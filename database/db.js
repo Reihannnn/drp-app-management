@@ -30,9 +30,8 @@ function createTables() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nama TEXT NOT NULL,
         alamat TEXT,
-        date TEXT NOT NULL,
-        category TEXT NOT NULL CHECK(category IN ('Active', 'Non Active', 'Harian')),
-        create_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        status TEXT NOT NULL CHECK(status IN ('Active', 'Non Active')),
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         no_telp TEXT
       )
     `);
@@ -44,24 +43,31 @@ function createTables() {
         member_id INTEGER NOT NULL,
         start_date TEXT NOT NULL,
         end_date TEXT NOT NULL,
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE
       )
     `);
 
-    // Table income
     db.run(`
-      CREATE TABLE IF NOT EXISTS income (
+        CREATE TABLE senam (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        member_id INTEGER NOT NULL,
-        amount REAL NOT NULL,
-        payment_date TEXT NOT NULL,
-        bulan TEXT NOT NULL,
-        tahun INTEGER NOT NULL,
-        keterangan TEXT,
-        FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE
-      )
-    `);
-
+        name TEXT NOT NULL,
+        no_handphone TEXT NOT NULL DEFAULT "N/A", 
+        alamat TEXT NOT NULL DEFAULT "N/A", 
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      `
+    )
+    db.run(`
+        CREATE TABLE boxing (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        name TEXT NOT NULL,
+        no_handphone TEXT NOT NULL DEFAULT "N/A",
+        alamat TEXT NOT NULL DEFAULT "N/A",
+        pertemuan INTEGER NOT NULL DEFAULT 0,
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      `)
     console.log("Semua tabel berhasil dibuat ✔");
   });
 }

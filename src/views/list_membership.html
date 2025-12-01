@@ -15,17 +15,17 @@
       :root {
         --blue-primary: oklch(54.6% 0.245 262.881);
       }
-      .membership {
+      .list-membership {
         background-color: var(--blue-primary);
       }
-      .icon-membership {
+      .list-icon-membership {
         color: white;
       }
-      .membership:hover {
+      .list-membership:hover {
         background-color: white;
         color: var(--blue-primary);
       }
-      .membership:hover .icon-membership {
+      .list-membership:hover .icon-list-membership {
         color: var(--blue-primary);
       }
 
@@ -49,7 +49,7 @@
         color: white;
       }
 
-      .filter-section{
+      .filter-section {
         gap: 1rem;
       }
     </style>
@@ -82,7 +82,7 @@
                   <i class="fas fa-id-card text-blue-600 text-xl"></i>
                 </div>
                 <h2 class="text-2xl font-semibold text-gray-800">
-                  Daftar Membership per Member
+                  Daftar Catatan Membership
                 </h2>
               </div>
               <div class="flex justify-between items-center filter-section">
@@ -118,72 +118,32 @@
                 <th
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
                 >
+                  Membership ID
+                </th>
+                <th
+                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                >
                   Nama
                 </th>
                 <th
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
                 >
-                  Jan
+                  Start-Date 
                 </th>
                 <th
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
                 >
-                  Feb
+                  End Date
                 </th>
                 <th
                   class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
                 >
-                  Mar
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Apr
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Mei
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Jun
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Jul
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Aug
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Sep
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Oct
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Nov
-                </th>
-                <th
-                  class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider"
-                >
-                  Des
+                  Action 
                 </th>
               </tr>
             </thead>
 
-            <tbody id="memberTable" class="divide-y divide-gray-200"></tbody>
+            <tbody id="listmembershipTable" class="divide-y divide-gray-200"></tbody>
           </table>
         </div>
       </div>
@@ -208,5 +168,5 @@
     // document.body.appendChild(script);
   </script>
 
-  <script src="../script/membership.js"></script>
+  <script src="../script/list_membership.js"></script>
 </html>
