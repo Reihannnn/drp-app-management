@@ -49,7 +49,12 @@
         color: white;
       }
 
-      .filter-section{
+      .filter-section {
+        gap: 1rem;
+      }
+
+      .print-button-section{
+        display: flex;
         gap: 1rem;
       }
     </style>
@@ -85,6 +90,7 @@
                   Daftar Membership per Member
                 </h2>
               </div>
+
               <div class="flex justify-between items-center filter-section">
                 <div class="relative">
                   <input
@@ -106,6 +112,27 @@
                   <option value="2030">2030</option>
                 </select>
               </div>
+            </div>
+            <br>
+            <div class="print-button-section">
+              <button
+                class="p-4 bg-green-100 print-btn"
+                id="print-excel-membership-button"
+              >
+                <i
+                  class="fas fa-box text-lg w-5 text-green-600"
+                ></i>
+                Print Excel
+              </button>
+              <button
+                class="p-4 bg-yellow-100 print-btn"
+                id="print-pdf-membership-button"
+              >
+                <i
+                  class="fas fa-box text-lg w-5 text-red-600  group-hover:text-white"
+                ></i>
+                Print PDF
+              </button>
             </div>
           </div>
         </div>
@@ -209,4 +236,6 @@
   </script>
 
   <script src="../script/membership.js"></script>
+  <script src="../script/print_pdf_membership.js"></script>
+  <script src="../script/print_excel_membership.js"></script>
 </html>

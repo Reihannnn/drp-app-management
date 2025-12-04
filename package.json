@@ -4,17 +4,36 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.reihan.drp",
+    "productName": "DRP Gym App",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "npmRebuild": false,
+    "buildDependenciesFromSource": false
   },
   "author": "reihan-achmad-to-backenddev",
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "electron": "^39.1.2"
+    "electron": "^39.1.2",
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.17",
+    "pdf-lib": "^1.17.1",
     "sqlite3": "^5.1.7",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "xlsx": "^0.18.5"
   }
 }

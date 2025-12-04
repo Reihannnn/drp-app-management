@@ -4,10 +4,36 @@ let cachedMembershipRows = []; // untuk search
 //  LOAD MEMBERSHIP
 // ==============================
 async function loadMembershipTable() {
-  const memberships = await window.api.getAllMembershipWithName();
-  // Contoh response: [{ id, name, start_date, end_date }]
-  console.log(memberships);
+  const allMemberships = await window.api.getAllMembershipWithName();
 
+  // ambil tahun terpilih di dropdown
+  const selectedYear = document.getElementById("yearFilter").value;
+
+  // filter berdasarkan tahun
+  let memberships = allMemberships;
+
+  if (selectedYear !== "all") {
+    memberships = allMemberships.filter((m) => {
+      const year = new Date(m.start_date).getFullYear();
+      return year.toString() === selectedYear;
+    });
+  }
+
+  if (memberships.length === 0) {
+    document.getElementById("listmembershipTable").innerHTML = `
+      <tr>
+        <td colspan="5" class="text-center py-4 text-gray-500">
+          Tidak ada member ditemukan
+        </td>
+      </tr>
+    `;
+    cachedMembershipRows = []; // kosongkan cache juga
+    return;
+  }
+
+  console.log(memberships)
+
+  // buat cache untuk search
   cachedMembershipRows = memberships.map((m) => ({
     id: m.id,
     name: m.name.toLowerCase(),
@@ -45,7 +71,7 @@ function renderMembershipTable(rows) {
 // ==============================
 async function deleteMembership(id) {
   const confirmDelete = confirm("Yakin ingin menghapus membership?");
-  console.log(id)
+  console.log(id);
   if (!confirmDelete) return;
 
   const result = await window.api.deleteMembership(id);
@@ -104,4 +130,9 @@ function initSearchHandler() {
 // ==============================
 document.addEventListener("DOMContentLoaded", () => {
   loadMembershipTable();
+
+  document.getElementById("yearFilter").addEventListener("change", () => {
+    loadMembershipTable();
+    console.log("ini ganti");
+  });
 });

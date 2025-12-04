@@ -1,8 +1,8 @@
 const sqlite3 = require("sqlite3").verbose();
+const { app } = require("electron")
 const path = require("path");
 const fs = require("fs");
-
-const dbPath = path.join(__dirname, "..", "drp-gym-management.db");
+const dbPath = path.join(app.getPath("userData"), "drp-gym-management.db");
 const isNewDatabase = !fs.existsSync(dbPath);
 
 const db = new sqlite3.Database(dbPath, (err) => {

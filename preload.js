@@ -33,4 +33,22 @@ contextBridge.exposeInMainWorld("api", {
 
   // chnage DIFFERENT PAGE
   openPage: (page) => ipcRenderer.send("open-page", page),
+
+
+  // print to excel and pdf file
+  exportExcel: (data, fileName) =>
+    ipcRenderer.invoke("export-excel", { data, fileName }),
+
+  printMembershipExcel: (year) => ipcRenderer.invoke("print-membership-excel", year),
+  printMembershipPDF: (year) => ipcRenderer.invoke("print-membership-pdf", year),
+  exportMembershipExcel: (data) => ipcRenderer.invoke("export-membership-excel", data),
+
+  // --- STATS MEMBERSHIP PER MONTH ---
+  getMembershipPerMonth: (year) => ipcRenderer.invoke("stats:membershipPerMonth", { year }),
+
+  // --- TOTAL MEMBER ACTIVE THIS MONTH ---
+  getActiveThisMonth: () => ipcRenderer.invoke("stats:activeThisMonth"),
+
+  // --- MEMBER YANG MAU HABIS MASA AKTIF ---
+  getExpiringSoon: () => ipcRenderer.invoke("stats:expiringSoon"),
 });

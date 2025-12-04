@@ -1,6 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const db = require("./database/db");
+const XLSX = require("xlsx");
+const fs = require("fs");
+const { PDFDocument, StandardFonts, rgb } = require("pdf-lib");
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -211,6 +214,260 @@ ipcMain.handle("search-member", (event, keyword) => {
       }
     );
   });
+});
+
+// export excel
+ipcMain.handle("export-excel", async (event, { data, fileName }) => {
+  try {
+    // pilih lokasi penyimpanan
+    const { filePath } = await dialog.showSaveDialog({
+      title: "Save Excel",
+      defaultPath: fileName,
+      filters: [{ name: "Excel File", extensions: ["xlsx"] }],
+    });
+
+    if (!filePath) return; // user cancel
+
+    // Generate workbook
+    const workSheet = XLSX.utils.json_to_sheet(data);
+    const workBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Daftar Member");
+
+    // Simpan file
+    XLSX.writeFile(workBook, filePath);
+
+    return { success: true };
+  } catch (err) {
+    console.error("Export Error:", err);
+    return { success: false, error: err };
+  }
+});
+
+ipcMain.handle("print-membership-excel", async (event, year) => {
+  const win = BrowserWindow.getFocusedWindow();
+
+  // ⛔ Ambil data tabel dari renderer
+  const tableData = await win.webContents.executeJavaScript(`
+    (() => {
+      const rows = [...document.querySelectorAll("#memberTable tr")];
+      return rows.map(row => {
+        return [...row.querySelectorAll("td")].map(td => td.innerText);
+      });
+    })();
+  `);
+
+  // HEADER
+  const header = [
+    "Nama",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "Mei",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Des",
+  ];
+
+  const wsData = [header, ...tableData];
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, `Membership-${year}`);
+
+  const filePath = path.join(
+    process.env.HOME || process.env.USERPROFILE,
+    `Membership-${year}.xlsx`
+  );
+  XLSX.writeFile(wb, filePath);
+
+  return filePath;
+});
+
+// export to pdf file
+// export membership to PDF by year
+ipcMain.handle("print-membership-pdf", async (event, { year, tableData }) => {
+  try {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([842, 595]); // Landscape A4
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    // Layout
+    const marginX = 40;
+    let y = 540;
+
+    const nameColumnWidth = 120;
+    const columnWidth = 55;
+    const rowHeight = 28;
+
+    // Draw Title
+    page.drawText(`Membership Report - ${year}`, {
+      x: marginX,
+      y,
+      size: 26,
+      font: fontBold,
+      color: rgb(0, 0, 0),
+    });
+
+    y -= 45;
+
+    // Header
+    const headers = [
+      "Nama", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Des",
+    ];
+
+    let x = marginX;
+
+    headers.forEach((header, idx) => {
+      const width = idx === 0 ? nameColumnWidth : columnWidth;
+
+      // header background
+      page.drawRectangle({
+        x,
+        y: y - rowHeight,
+        width,
+        height: rowHeight,
+        color: rgb(0.9, 0.9, 0.9),
+        borderWidth: 1,
+        borderColor: rgb(0.6, 0.6, 0.6),
+      });
+
+      // header text
+      page.drawText(header, {
+        x: x + 5,
+        y: y - rowHeight + 8,
+        size: 12,
+        font: fontBold,
+        color: rgb(0, 0, 0),
+      });
+
+      x += width;
+    });
+
+    y -= rowHeight;
+
+    // Draw Rows
+    tableData.forEach((row) => {
+      x = marginX;
+
+      row.forEach((cell, idx) => {
+        const width = idx === 0 ? nameColumnWidth : columnWidth;
+
+        // cell border
+        page.drawRectangle({
+          x,
+          y: y - rowHeight,
+          width,
+          height: rowHeight,
+          borderWidth: 1,
+          borderColor: rgb(0.75, 0.75, 0.75),
+        });
+
+        // text
+        const text = cell || "----";
+
+        page.drawText(text, {
+          x: x + 5,
+          y: y - rowHeight + 8,
+          size: 11,
+          font,
+          color: rgb(0, 0, 0),
+        });
+
+        x += width;
+      });
+
+      y -= rowHeight;
+    });
+
+    // Save PDF
+    const savePath = dialog.showSaveDialogSync({
+      title: "Save Membership PDF",
+      defaultPath: `Membership-${year}.pdf`,
+      filters: [{ name: "PDF File", extensions: ["pdf"] }],
+    });
+
+    if (!savePath) return false;
+
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync(savePath, pdfBytes);
+
+    return true;
+
+  } catch (err) {
+    console.error("Error PDF:", err);
+    return false;
+  }
+});
+
+//print excel membership data
+ipcMain.handle("export-membership-excel", async (event, { year, tableData }) => {
+  try {
+    const workbook = XLSX.utils.book_new();
+
+    const worksheet = XLSX.utils.aoa_to_sheet([
+      ["Nama", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
+      ...tableData
+    ]);
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Membership");
+
+    const savePath = dialog.showSaveDialogSync({
+      title: "Save Membership Excel",
+      defaultPath: `Membership-${year}.xlsx`,
+      filters: [{ name: "Excel File", extensions: ["xlsx"] }],
+    });
+
+    if (!savePath) return false;
+
+    XLSX.writeFile(workbook, savePath);
+
+    return true;
+  } catch (err) {
+    console.error("Error Excel:", err);
+    return false;
+  }
+});
+
+//dashboard KPI analisa dasar 
+ipcMain.handle("stats:membershipPerMonth", async (event, { year }) => {
+  const rows = await db.allAsync(`
+    SELECT 
+      strftime('%m', start_date) AS month,
+      COUNT(*) AS total
+    FROM membership
+    WHERE strftime('%Y', start_date) = ?
+    GROUP BY month
+    ORDER BY month ASC
+  `, [year]);
+
+  return rows;
+});
+
+ipcMain.handle("stats:activeThisMonth", async () => {
+  return await db.getAsync(`
+    SELECT COUNT(*) AS aktif
+    FROM member
+    WHERE status = 'Active'
+  `);
+});
+
+ipcMain.handle("stats:expiringSoon", async () => {
+  return await db.allAsync(`
+    SELECT 
+      member.nama, membership.end_date
+    FROM membership
+    JOIN member ON member.id = membership.member_id
+    WHERE date(membership.end_date) <= date('now', '+5 day')
+      AND date(membership.end_date) >= date('now')
+    ORDER BY membership.end_date ASC
+  `);
 });
 
 // if close app => also stop program ketika sedang running

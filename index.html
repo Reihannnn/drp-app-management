@@ -3,36 +3,389 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Panel | DRP Management</title>
+    <title>Dashboard | DRP Management</title>
     <link rel="stylesheet" href="src/css/output.css" />
     <link rel="stylesheet" href="public/assets/fontawesome/css/all.min.css" />
+    <style>
+      :root {
+        --blue-primary: oklch(54.6% 0.245 262.881);
+        --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+
+      body {
+        background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
+        min-height: 100vh;
+      }
+
+      .dashboard {
+        background-color: var(--blue-primary);
+      }
+
+      .icon-dashboard {
+        color: white;
+      }
+
+      .dashboard:hover {
+        background-color: white;
+        color: var(--blue-primary);
+
+        .icon-dashboard {
+          color: var(--blue-primary);
+        }
+      }
+
+      /* Header with gradient */
+      .header {
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .header h1,
+      .header p {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      /* Stat Cards */
+      .stat-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border-left: 4px solid transparent;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        opacity: 0.1;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .stat-card:hover::before {
+        transform: scale(1.2);
+      }
+
+      /* Card 1 - Member Status */
+      .stat-card:nth-child(1) {
+        border-left-color: #667eea;
+      }
+
+      .stat-card:nth-child(1)::before {
+        background: var(--gradient-1);
+      }
+
+      .stat-card:nth-child(1) .icon-wrapper {
+        background: var(--gradient-1);
+      }
+
+      /* Card 2 - Growth Rate */
+      .stat-card:nth-child(2) {
+        border-left-color: #f5576c;
+      }
+
+      .stat-card:nth-child(2)::before {
+        background: var(--gradient-2);
+      }
+
+      .stat-card:nth-child(2) .icon-wrapper {
+        background: var(--gradient-2);
+      }
+
+      /* Card 3 - Active This Month */
+      .stat-card:nth-child(3) {
+        border-left-color: #00f2fe;
+      }
+
+      .stat-card:nth-child(3)::before {
+        background: var(--gradient-3);
+      }
+
+      .stat-card:nth-child(3) .icon-wrapper {
+        background: var(--gradient-3);
+      }
+
+      /* Card 4 - Expiring Soon */
+      .stat-card:nth-child(4) {
+        border-left-color: #38f9d7;
+      }
+
+      .stat-card:nth-child(4)::before {
+        background: var(--gradient-4);
+      }
+
+      .stat-card:nth-child(4) .icon-wrapper {
+        background: var(--gradient-4);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .stat-detail {
+        font-size: 1rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .stat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .badge-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      /* Member Status Specific */
+      .member-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .member-stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f8fafc;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+      }
+
+      .member-stat-item:hover {
+        background: #f1f5f9;
+        transform: translateX(5px);
+      }
+
+      .member-stat-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: #475569;
+      }
+
+      .member-stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .status-dot.active {
+        background: #22c55e;
+      }
+
+      .status-dot.inactive {
+        background: #ef4444;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stat-value {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
   </head>
-  <body>
+  <body class="main">
     <!-- sidebar  -->
     <div class="sidebar"></div>
-    <div
-      id="content"
-      class="lg:ml-64 min-h-screen p-8 transition-all duration-300"
-    >
-      <div class="mb-8 shadow-lg p-6 rounded-xl">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">
-          Dashboard Management
-        </h1>
-        <p class="text-gray-600">Visualisasi Data Management Gym</p>
+
+    <main class="lg:ml-64 ml-0 min-h-screen p-4 transition-all duration-300">
+      <!-- Header -->
+      <div class="shadow-lg p-6 rounded-xl header">
+        <h1 class="text-4xl font-bold mb-2">Dashboard Management</h1>
+        <p class="text-lg">Visualisasi Data Management Gym</p>
       </div>
-    </div>
-  </body>
 
-  <script>
-    fetch("src/components/sidebar.html")
-      .then((res) => res.text())
-      .then((html) => {
-        document.querySelector(".sidebar").innerHTML = html;
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <!-- Member Status Card -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Member Status</span>
+            <div class="icon-wrapper">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="member-stats">
+            <div class="member-stat-item">
+              <div class="member-stat-label">
+                <span class="status-dot active"></span>
+                Aktif
+              </div>
+              <span class="member-stat-value" id="member-active">0</span>
+            </div>
+            <div class="member-stat-item">
+              <div class="member-stat-label">
+                <span class="status-dot inactive"></span>
+                Non Aktif
+              </div>
+              <span class="member-stat-value" id="member-non-active">0</span>
+            </div>
+          </div>
+        </div>
 
-        document.getElementById("btn-logout").addEventListener("click", () => {
-          window.api.exitApp();
+        <!-- Growth Rate Card -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Growth Rate</span>
+            <div class="icon-wrapper">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="growth-rate">0%</div>
+          <div class="stat-detail">
+            <span class="stat-badge badge-success">
+              <i class="fas fa-arrow-up"></i>
+              Trending
+            </span>
+            <span>vs last month</span>
+          </div>
+        </div>
+
+        <!-- Expiring Soon Card -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Expiring Soon</span>
+            <div class="icon-wrapper">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+          </div>
+          <div class="stat-value" id="expiring-soon">0</div>
+          <div class="stat-detail">
+            <span class="stat-badge badge-warning">
+              <i class="fas fa-clock"></i>
+              ≤ 5 Hari
+            </span>
+            <span>Perlu perpanjangan</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      fetch("src/components/sidebar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.querySelector(".sidebar").innerHTML = html;
+
+          document
+            .getElementById("btn-logout")
+            ?.addEventListener("click", () => {
+              window.api.exitApp();
+            });
         });
-      });
-  </script>
-  <!-- <script src="router.js"></script> -->
+    </script>
+
+    <script src="src/script/dashboard.js"></script>
+  </body>
 </html>

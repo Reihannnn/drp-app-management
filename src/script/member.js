@@ -6,6 +6,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   try {
     await window.api.autoUpdateAllMember();
     loadMembers();
+    initStatusFilter();
     initSearchHandler();
     console.log("Auto update member status selesai");
   } catch (err) {
@@ -18,6 +19,7 @@ async function loadMembers() {
   try {
     console.log("Loading members...");
     const members = await window.api.getMember();
+    console.log(members)
     members.sort((a, b) => a.id - b.id);
     console.log("Members data:", members);
     displayMembers(members);
@@ -61,6 +63,10 @@ function displayMembers(members) {
             <div class="text-sm font-medium text-gray-900">${member.nama}</div>
           </div>
         </div>
+      </td>
+      <td class="px-6 py-4 text-sm text-gray-700">
+        ${member.id || "-"}
+      </td>
       </td>
       <td class="px-6 py-4 text-sm text-gray-700">
         ${member.alamat || "-"}
@@ -158,4 +164,41 @@ function initSearchHandler() {
 
     displayMembers(filtered);
   });
+}
+
+function initStatusFilter() {
+  const filter = document.getElementById("statusFilter");
+  if (!filter) return;
+
+  filter.addEventListener("change", async () => {
+    applyFilters();
+  });
+}
+
+async function applyFilters() {
+  const searchInput = document.querySelector(
+    'input[placeholder="Cari member..."]'
+  );
+  const filter = document.getElementById("statusFilter");
+
+  const searchTerm = searchInput.value.toLowerCase();
+  const status = filter.value;
+
+  let members = await window.api.getMember();
+
+  // Filter status
+  if (status !== "All") {
+    members = members.filter((member) => member.status === status);
+  }
+
+  // Filter search
+  members = members.filter(
+    (member) =>
+      member.nama.toLowerCase().includes(searchTerm) ||
+      member.no_telp.includes(searchTerm) ||
+      member.status.toLowerCase().includes(searchTerm) ||
+      (member.alamat && member.alamat.toLowerCase().includes(searchTerm))
+  );
+
+  displayMembers(members);
 }
