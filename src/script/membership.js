@@ -114,7 +114,6 @@
 //   });
 // }
 
-
 let cachedMembershipRows = [];
 let cachedMembers = [];
 
@@ -153,6 +152,9 @@ async function loadMembershipTable() {
 
   tableBody.innerHTML = "";
 
+  // ============================
+  // RENDER SEMUA MEMBER
+  // ============================
   for (const member of members) {
     const memberships = await window.api.listMembershipByMember(member.id);
 
@@ -164,10 +166,9 @@ async function loadMembershipTable() {
       const end = new Date(m.end_date);
       const endYear = end.getFullYear();
 
-      // Tampilkan hanya yang tahun end_date sesuai filter
       if (endYear != selectedYear) return;
 
-      const monthIndex = end.getMonth(); // 0-11
+      const monthIndex = end.getMonth();
       const monthName = months[monthIndex];
 
       const today = new Date();
@@ -197,7 +198,6 @@ async function loadMembershipTable() {
         .join("")}
     `;
 
-    // SIMPAN KE CACHE UNTUK SEARCH
     cachedMembershipRows.push({
       name: member.nama.toLowerCase(),
       rowHtml: row.innerHTML,
@@ -205,8 +205,44 @@ async function loadMembershipTable() {
 
     tableBody.appendChild(row);
   }
-}
 
+  // ============================
+  // SETELAH SEMUA MEMBER TERISI → HITUNG TOTAL
+  // ============================
+  const totals = {};
+  months.forEach((m) => (totals[m] = 0));
+
+  cachedMembershipRows.forEach((r) => {
+    const temp = document.createElement("tr");
+    temp.innerHTML = r.rowHtml;
+
+    const tds = temp.querySelectorAll("td");
+
+    months.forEach((m, i) => {
+      const text = tds[i + 1].textContent.trim();
+      if (text !== "----") totals[m] += 1;
+    });
+  });
+
+  // ============================
+  // RENDER ROW TOTAL
+  // ============================
+  const totalRow = document.createElement("tr");
+  totalRow.classList.add("bg-gray", "font-bold");
+
+  totalRow.innerHTML = `
+    <td class="text-center py-2 font-semibold">TOTAL</td>
+    ${months
+      .map(
+        (m) => `
+      <td class="text-center py-2">${totals[m]}</td>
+    `
+      )
+      .join("")}
+  `;
+
+  tableBody.appendChild(totalRow);
+}
 function formatDate(dateObj) {
   const m = dateObj.getMonth() + 1;
   const d = dateObj.getDate();
@@ -223,7 +259,9 @@ async function getAllMembership() {
 // 🔍 SEARCH HANDLER (FINAL)
 // ===============================
 function initSearchHandler() {
-  const input = document.querySelector('input[placeholder="Cari membership..."]');
+  const input = document.querySelector(
+    'input[placeholder="Cari membership..."]'
+  );
   if (!input) return;
 
   input.addEventListener("input", () => {
@@ -244,9 +282,7 @@ function initSearchHandler() {
     );
 
     // Render hasil filter
-    tableBody.innerHTML = filtered
-      .map((r) => `<tr>${r.rowHtml}</tr>`)
-      .join("");
+    tableBody.innerHTML = filtered.map((r) => `<tr>${r.rowHtml}</tr>`).join("");
 
     // Jika tidak ada hasil
     if (filtered.length === 0) {
@@ -254,11 +290,9 @@ function initSearchHandler() {
         <tr>
           <td colspan="13" class="text-center py-4 text-gray-500">
             Tidak ada member ditemukan
-          </td>
+          </td> 
         </tr>
       `;
     }
   });
 }
-
-

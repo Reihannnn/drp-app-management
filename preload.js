@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld("api", {
   exitApp: () => ipcRenderer.send("app:exit"),
 
   // MEMBER
+  getMemberById: (id) => ipcRenderer.invoke("member:getById", id), // get member by id 
   addMember: (data) => ipcRenderer.invoke("member:add", data),
   getMember: () => ipcRenderer.invoke("member:list"),
   updateMember: (data) => ipcRenderer.invoke("member:update", data),
@@ -18,6 +19,7 @@ contextBridge.exposeInMainWorld("api", {
   // MEMBERSHIP
   addMembership: (data) => ipcRenderer.invoke("membership:add", data),
   getAllMembership: () => ipcRenderer.invoke("membership:list"),
+  getMembershipById: (id) => ipcRenderer.invoke("membership:getById", id),
   //GET ALL MEMBERSHIP USE NAME 
   getAllMembershipWithName: () => ipcRenderer.invoke("getAllMembershipWithName:list"),
   listMembershipByMember: (id) =>

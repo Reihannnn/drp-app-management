@@ -3,16 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" />
     <title>Dashboard | DRP Management</title>
     <link rel="stylesheet" href="src/css/output.css" />
-    <link rel="stylesheet" href="public/assets/fontawesome/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="public/assets/fontawesome/css/all.min.css"
+    />
     <style>
+      .hidden {
+        display: none !important;
+      }
       :root {
         --blue-primary: oklch(54.6% 0.245 262.881);
         --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        --gradient-5: linear-gradient(135deg, #43a4e9 0%, #38c2f9 100%);
       }
 
       body {
@@ -145,7 +153,7 @@
 
       /* Card 4 - Expiring Soon */
       .stat-card:nth-child(4) {
-        border-left-color: #38f9d7;
+        border-left-color: #38f9b5;
       }
 
       .stat-card:nth-child(4)::before {
@@ -154,6 +162,18 @@
 
       .stat-card:nth-child(4) .icon-wrapper {
         background: var(--gradient-4);
+      }
+
+      .stat-card:nth-child(5) {
+        border-left-color: #38f9f6;
+      }
+
+      .stat-card:nth-child(5)::before {
+        background: var(--gradient-5);
+      }
+
+      .stat-card:nth-child(5) .icon-wrapper {
+        background: var(--gradient-5);
       }
 
       .stat-header {
@@ -215,8 +235,22 @@
         background-color: #dcfce7;
         color: #166534;
       }
+      .badge-warning1 {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
 
       .badge-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      /* membership */
+      .badge-success-membership {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      .badge-warning-membership {
         background-color: #fef3c7;
         color: #92400e;
       }
@@ -293,6 +327,12 @@
           font-size: 1.5rem;
         }
       }
+
+      /* total member */
+      .stat-member {
+        font-size: 2rem;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body class="main">
@@ -313,7 +353,7 @@
           <div class="stat-header">
             <span class="stat-label">Member Status</span>
             <div class="icon-wrapper">
-              <i class="fas fa-users"></i>
+              <i class="fas fa-user-alt"></i>
             </div>
           </div>
           <div class="member-stats">
@@ -334,10 +374,11 @@
           </div>
         </div>
 
-        <!-- Growth Rate Card -->
+        <!-- Growth members track-->
         <div class="stat-card">
           <div class="stat-header">
-            <span class="stat-label">Growth Rate</span>
+            <span class="stat-label">Growth Rate <br />(Member)</span>
+
             <div class="icon-wrapper">
               <i class="fas fa-chart-line"></i>
             </div>
@@ -346,10 +387,46 @@
           <div class="stat-detail">
             <span class="stat-badge badge-success">
               <i class="fas fa-arrow-up"></i>
-              Trending
+              Positif
             </span>
-            <span>vs last month</span>
+            <span class="stat-badge badge-warning">
+              <i class="fas fa-arrow-down"></i>
+              Negative
+            </span>
           </div>
+          <br />
+          <p>Member baru bulan ini : <span id="member-monthNow"></span></p>
+          <p>Member baru bulan lalu : <span id="member-lastMonth"></span></p>
+        </div>
+
+        <!-- Growth membership track-->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Growth Rate (Membership)</span>
+            <div class="icon-wrapper">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+
+          <div class="stat-value" id="membership-growth-rate">0%</div>
+
+          <div class="stat-detail">
+            <span class="stat-badge badge-success-membership hidden">
+              <i class="fas fa-arrow-up"></i>
+              Positif
+            </span>
+            <span class="stat-badge badge-warning-membership hidden">
+              <i class="fas fa-arrow-down"></i>
+              Negative
+            </span>
+          </div>
+          <br />
+          <p>
+            Membership baru bulan ini : <span id="membership-monthNow"></span>
+          </p>
+          <p>
+            Membership baru bulan lalu : <span id="membership-lastMonth"></span>
+          </p>
         </div>
 
         <!-- Expiring Soon Card -->
@@ -362,18 +439,30 @@
           </div>
           <div class="stat-value" id="expiring-soon">0</div>
           <div class="stat-detail">
-            <span class="stat-badge badge-warning">
+            <span class="stat-badge badge-warning1">
               <i class="fas fa-clock"></i>
               ≤ 5 Hari
             </span>
             <span>Perlu perpanjangan</span>
           </div>
         </div>
+
+        <!-- total member -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Total Member</span>
+            <div class="icon-wrapper">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="stat-member"><span id="total-member"></span> Member</div>
+          <div class="stat-detail"></div>
+        </div>
       </div>
     </main>
 
     <script>
-      fetch("src/components/sidebar.html")
+      fetch("src/components/sidebar_index.html")
         .then((res) => res.text())
         .then((html) => {
           document.querySelector(".sidebar").innerHTML = html;

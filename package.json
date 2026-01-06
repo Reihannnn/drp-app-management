@@ -14,7 +14,12 @@
       "output": "dist"
     },
     "files": [
-      "**/*"
+      "**/*",
+      "preload.js",
+      "main.js"
+    ],
+    "asarUnpack": [
+      "preload.js"
     ],
     "win": {
       "target": "nsis"

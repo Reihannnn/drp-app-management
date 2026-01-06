@@ -81,19 +81,21 @@ function displayMembers(members) {
           ${member.status}
         </span>
       </td>
-      <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+      <td class="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
         <button 
-          onclick="editMember(${member.id})" 
-          class="text-blue-600 hover:text-blue-900 mr-3 transition"
-          title="Edit"
+          onclick="editMember(${member.id})"
+          class="text-blue-600 bg-blue-100 p-4 rounded-xl hover:text-white hover:bg-blue-600 transition"
+          title="Hapus"
         >
+        Edit
           <i class="fas fa-edit"></i>
         </button>
         <button 
           onclick="deleteMember(${member.id}, '${member.nama}')" 
-          class="text-red-600 hover:text-red-900 transition"
+          class="text-red-600 bg-red-100 p-4 rounded-xl hover:text-red-900  transition"
           title="Hapus"
         >
+        Delete
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -138,10 +140,10 @@ async function deleteMember(id, nama) {
 }
 
 // Function untuk edit member (bisa dikembangkan dengan modal)
-function editMember(id) {
-  alert(`Fitur edit untuk member ID ${id} sedang dalam pengembangan`);
-  // TODO: Implement edit functionality dengan modal atau form
-}
+// function editMember(id) {
+//   alert(`Fitur edit untuk member ID ${id} sedang dalam pengembangan`);
+//   // TODO: Implement edit functionality dengan modal atau form
+// }
 
 // Search functionality
 function initSearchHandler() {

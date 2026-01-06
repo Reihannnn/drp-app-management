@@ -89,13 +89,29 @@ ipcMain.handle("member:list", async () => {
   return await db.allAsync("SELECT * FROM member ORDER BY id DESC");
 });
 
+// GET / READ  BY ONE ID
+ipcMain.handle("member:getById", async (event, id) => {
+  return await db.getAsync(
+    `SELECT * FROM member WHERE id = ?`,
+    [id]
+  );
+});
+
 // UPDATE MEMBER
 ipcMain.handle("member:update", async (event, data) => {
   return await db.runAsync(
-    `UPDATE member SET nama=?, alamat=?, date=?, category=?, no_telp=? WHERE id=?`,
-    [data.nama, data.alamat, data.status, data.no_telp, data.id]
+    `UPDATE member 
+     SET nama = ?, alamat = ?, no_telp = ?
+     WHERE id = ?`,
+    [
+      data.nama,
+      data.alamat,
+      data.no_telp,
+      data.id
+    ]
   );
 });
+
 
 // UPDATE STATUS MEMBER
 ipcMain.handle("member:autoUpdateAll", autoUpdateAllMemberStatus);
@@ -155,6 +171,12 @@ ipcMain.handle("membership:listByMember", async (event, member_id) => {
     `SELECT * FROM membership WHERE member_id=? ORDER BY id DESC`,
     [member_id]
   );
+});
+
+
+// GET / READ  MEMBERSHIP BY ID 
+ipcMain.handle("membership:getById", async (event, id) => {
+  return await db.getAsync("SELECT * FROM membership WHERE id = ?", [id]);
 });
 
 // GET ALL MEMBERSHIP WITH NAME USE MEMBER_ID
