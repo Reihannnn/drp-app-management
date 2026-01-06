@@ -37,3 +37,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
+
+function editMember(id) {
+  localStorage.setItem("edit_member_id", id);
+  api.openPage('src/views/edit_member.html');
+}
