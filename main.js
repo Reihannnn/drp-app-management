@@ -14,7 +14,7 @@ const createWindow = () => {
       nodeIntegration: false,
       contextIsolation: true,
     },
-    icon: path.join(__dirname, "public/assets/image/drp_logo.jpg"),
+    icon: path.join(__dirname, "public/assets/icon/drp_logo.ico"),
   });
 
   win.loadFile("index.html");
