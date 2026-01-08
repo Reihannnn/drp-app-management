@@ -22,7 +22,8 @@
       "preload.js"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon" : "public/assets/icon/drp_logo.ico"
     },
     "npmRebuild": false,
     "buildDependenciesFromSource": false
